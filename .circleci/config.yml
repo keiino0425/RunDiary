@@ -20,8 +20,8 @@ jobs:
       - run:
           name: Setup database
           command: |
-            bundle exec rake db:create
-            bundle exec rake db:schema:load
+            docker exec rake db:create
+            docker exec rake db:schema:load
       - run:
           name: Run rspec
           command: docker-compose exec web rspec
