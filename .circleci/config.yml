@@ -16,7 +16,7 @@ jobs:
           command: |
             set -x
             docker-compose up -d
-            docker exec RunDiary_app curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
+            docker exec rundiary_app curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
       - run:
           name: Setup database
           command: |
@@ -28,7 +28,7 @@ jobs:
   rubocop:
     working_directory: ~/RunDiary
     docker:
-      - image: circleci/ruby:2.7.3
+      - image: circleci/ruby:2.7.5
     steps:
       - checkout
       - restore_cache:
