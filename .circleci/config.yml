@@ -21,6 +21,7 @@ jobs:
           name: Setup database
           command: |
             docker-compose exec rundiary bash -c yes n |
+            bundle install
             bundle exec rails db:create
             bundle exec rails db:schema:load
       - run:
