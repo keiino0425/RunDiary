@@ -3,7 +3,7 @@ jobs:
   rspec:
     working_directory: ~/RunDiary
     docker:
-      - image: circleci/ruby
+      - image: circleci/ruby:2.7.5
     steps:
       - checkout
       - setup_remote_docker
@@ -20,10 +20,9 @@ jobs:
       - run:
           name: Setup database
           command: |
-            docker-compose exec rundiary bash -c yes n |
-            bundle install
-            bundle exec rails db:create
-            bundle exec rails db:schema:load
+            docker-compose exec rundiary bash -c yes n
+            bundle exec rake db:create
+            bundle exec rake db:schema:load
       - run:
           name: Run rspec
           command: docker-compose exec web rspec
