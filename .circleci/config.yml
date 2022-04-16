@@ -20,7 +20,7 @@ jobs:
       - run:
           name: bundle install
           command: |
-            docker-compose exec rundiary bash -c yes n | bundle install --jobs=8 --clean
+            docker-compose exec rundiary bash -c yes n | bundle install
       - run:
           name: Setup database
           command: |
