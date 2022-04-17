@@ -28,7 +28,6 @@ jobs:
           key: v1-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - ~/circleci-demo-workflows/vendor/bundle
-      - run: mv config/database.yml.ci config/database.yml
       - run:
           name: Databasesetup
           command: |
