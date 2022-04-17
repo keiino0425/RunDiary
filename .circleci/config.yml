@@ -2,6 +2,7 @@ version: 2.1
 jobs:
   rspec:
     working_directory: ~/RunDiary
+    parallelism: 3
     docker:
       - image: circleci/ruby:2.7.5
     steps:
@@ -17,18 +18,46 @@ jobs:
             set -x
             docker-compose up -d
             docker exec rundiary_app curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
+      - restore_cache:
+          key: v1-bundle-{{ checksum "Gemfile.lock" }}
       - run:
-          name: bundle install
+          name: install dependencies
           command: |
-            docker-compose exec rundiary bash -c yes n | bundle install
+            gem install bundler -v 2.0.2
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          key: v1-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ~/circleci-demo-workflows/vendor/bundle
+
+      # Database setup
+      - run: mv ./config/database.yml.ci ./config/database.yml
       - run:
-          name: Setup database
+          name: Databasesetup
           command: |
-            bundle exec rake db:create
-            bundle exec rake db:schema:load
+             bundle exec rake db:create
+             bundle exec rake db:schema:load
+             bundle exec rake db:seed
+      # run tests!
       - run:
           name: Run rspec
-          command: docker-compose exec web rspec
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
+              circleci tests split --split-by=timings)"
+
+            bundle exec rspec \
+              --format progress \
+              --format RspecJunitFormatter \
+              --out /tmp/test-results/rspec.xml \
+              --format progress \
+              $TEST_FILES
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
 
   rubocop:
     working_directory: ~/RunDiary
