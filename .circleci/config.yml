@@ -3,7 +3,7 @@ jobs:
   rspec:
     working_directory: ~/RunDiary
     docker:
-      - image: circleci/ruby
+      - image: circleci/ruby:2.7.5
     steps:
       - checkout
       - setup_remote_docker
