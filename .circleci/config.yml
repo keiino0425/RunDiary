@@ -31,10 +31,9 @@ jobs:
       - run:
           name: Databasesetup
           command: |
-            docker-compose exec web bash -c yes n |
-            bundle exec rake db:create
-            bundle exec rake db:schema:load
-            bundle exec rake db:seed
+            docker-compose exec web rake db:create
+            docker-compose exec web rake db:schema:load
+            docker-compose exec web rake db:seed
       - run:
           name: Run rspec
           command: |
