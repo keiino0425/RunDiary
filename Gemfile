@@ -48,6 +48,7 @@ group :development do
   gem 'spring'
   gem 'rubocop-airbnb'
   gem 'rubyzip', '2.3.0'
+  gem 'ast', '2.4.2'
 end
 
 group :test do
